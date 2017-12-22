@@ -1,0 +1,21 @@
+{
+    "name": "dxw/iguana-share",
+    "homepage": "https://github.com/dxw/iguana-share",
+    "type": "library",
+    "license": "MIT",
+    "require-dev": {
+        "peridot-php/peridot": "^1.19",
+        "peridot-php/leo": "^1.6",
+        "peridot-php/peridot-dot-reporter": "^1.0",
+        "friendsofphp/php-cs-fixer": "^2.9",
+        "php-mock/php-mock-mockery": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dxw\\Iguana\\Share\\": "src/"
+        }
+    },
+    "require": {
+        "dxw/iguana": "^1.0"
+    }
+}
