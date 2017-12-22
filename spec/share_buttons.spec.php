@@ -1,6 +1,7 @@
 <?php
 
 namespace Dxw\Iguana\Share;
+
 use \phpmock\mockery\PHPMockery;
 
 describe(ShareButtons::class, function () {
