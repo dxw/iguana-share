@@ -8,18 +8,18 @@ describe(FacebookShareLink::class, function () {
     });
 
     it('is a ShareLink', function () {
-        expect($this->shareLink)->to->be->instanceof(ShareLink::class);
+        expect($this->shareLink)->toBeAnInstanceOf(ShareLink::class);
     });
 
     describe('->getLink()', function () {
         it('returns the link', function () {
-            expect($this->shareLink->getLink('aaa bbb=ccc', 'ddd'))->to->equal('https://www.facebook.com/sharer/sharer.php?u=aaa+bbb%3Dccc');
+            expect($this->shareLink->getLink('aaa bbb=ccc', 'ddd'))->toEqual('https://www.facebook.com/sharer/sharer.php?u=aaa+bbb%3Dccc');
         });
     });
 
     describe('->getPlatform()', function () {
         it('returns the platform', function () {
-            expect($this->shareLink->getPlatform())->to->equal('Facebook');
+            expect($this->shareLink->getPlatform())->toEqual('Facebook');
         });
     });
 });

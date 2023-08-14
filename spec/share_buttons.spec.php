@@ -2,24 +2,34 @@
 
 namespace Dxw\Iguana\Share;
 
-use \phpmock\mockery\PHPMockery;
+use \Kahlan\Plugin\Double;
 
 describe(ShareButtons::class, function () {
     beforeEach(function () {
-        $this->helpers = \Mockery::mock(\Dxw\Iguana\Theme\Helpers::class);
+        $this->helpers = Double::instance([
+            'extends' => \Dxw\Iguana\Theme\Helpers::class
+        ]);
 
-        $this->twitterShareLink = \Mockery::mock(TwitterShareLink::class, function ($mock) {
-            $mock->shouldReceive('getPlatform')->with()->andReturn('The Tweeters');
-            $mock->shouldReceive('getLink')->with('postlink', 'posttitle"')->andReturn('atwitterlink');
-        });
-        $this->facebookShareLink = \Mockery::mock(FacebookShareLink::class, function ($mock) {
-            $mock->shouldReceive('getPlatform')->with()->andReturn('Facey McFacebook');
-            $mock->shouldReceive('getLink')->with('postlink', 'posttitle"')->andReturn('afacebooklink');
-        });
-        $this->linkedInShareLink = \Mockery::mock(LinkedInShareLink::class, function ($mock) {
-            $mock->shouldReceive('getPlatform')->with()->andReturn('LinkedIn');
-            $mock->shouldReceive('getLink')->with('postlink', 'posttitle"')->andReturn('alinkedinlink');
-        });
+        $this->twitterShareLink = Double::instance([
+            'extends' => TwitterShareLink::class,
+            'magicMethods' => true
+        ]);
+        allow($this->twitterShareLink)->toReceive('getPlatform')->andReturn('The Tweeters');
+        allow($this->twitterShareLink)->toReceive('getLink')->andReturn('atwitterlink');
+
+        $this->facebookShareLink = Double::instance([
+            'extends' => FacebookShareLink::class,
+            'magicMethods' => true
+        ]);
+        allow($this->facebookShareLink)->toReceive('getPlatform')->andReturn('Facey McFacebook');
+        allow($this->facebookShareLink)->toReceive('getLink')->andReturn('afacebooklink');
+
+        $this->linkedInShareLink = Double::instance([
+            'extends' => LinkedInShareLink::class,
+            'magicMethods' => true
+        ]);
+        allow($this->linkedInShareLink)->toReceive('getPlatform')->andReturn('LinkedIn');
+        allow($this->linkedInShareLink)->toReceive('getLink')->andReturn('alinkedinlink');
 
         $this->shareLinks = [
             $this->twitterShareLink,
@@ -27,28 +37,36 @@ describe(ShareButtons::class, function () {
             $this->linkedInShareLink,
         ];
 
-        $this->shareButtons = new ShareButtons($this->helpers, $this->shareLinks);
-
-        PHPMockery::mock(__NAMESPACE__, 'esc_attr')->andReturnUsing(function ($a) {
-            return '_'.$a.'_';
+        allow('esc_attr')->toBeCalled()->andRun(function ($a) {
+            return '_' . $a . '_';
         });
+        allow('get_permalink')->toBeCalled()->andReturn('postlink');
+        allow('get_the_title')->toBeCalled()->andReturn('postitle&quot;');
 
-        PHPMockery::mock(__NAMESPACE__, 'get_permalink')->with()->andReturn('postlink');
-
-        PHPMockery::mock(__NAMESPACE__, 'get_the_title')->with()->andReturn('posttitle&quot;');
+        $this->shareButtons = new ShareButtons($this->helpers, $this->shareLinks);
     });
 
     afterEach(function () {
-        \Mockery::close();
     });
 
     it('is registerable', function () {
-        expect($this->shareButtons)->to->be->instanceof(\Dxw\Iguana\Registerable::class);
+        expect($this->shareButtons)->toBeAnInstanceOf(\Dxw\Iguana\Registerable::class);
     });
 
     describe('->register()', function () {
         it('registers helper', function () {
-            $this->helpers->shouldReceive('registerFunction')->with('shareButtons', [$this->shareButtons, 'shareButtons'])->once();
+            allow($this->helpers)->toReceive('registerFunction');
+            expect($this->helpers)->toReceive('registerFunction')->once();
+            $this->shareButtons = new ShareButtons($this->helpers, $this->shareLinks);
+
+            $this->shareButtons->register();
+        });
+    });
+
+    describe('->register()', function () {
+        it('registers helper', function () {
+            expect($this->helpers)->toReceive('registerFunction')->once()->with('shareButtons', [$this->shareButtons, 'shareButtons']);
+
             $this->shareButtons->register();
         });
     });
@@ -59,7 +77,7 @@ describe(ShareButtons::class, function () {
             $this->shareButtons->shareButtons();
             $output = ob_get_clean();
 
-            expect($output)->to->equal(
+            expect($output)->toEqual(
                 '<ul>' .
                 '<li><a target="_blank" href="_atwitterlink_" class="_the_tweeters_">_The Tweeters_</a></li>' .
                 '<li><a target="_blank" href="_afacebooklink_" class="_facey_mcfacebook_">_Facey McFacebook_</a></li>' .

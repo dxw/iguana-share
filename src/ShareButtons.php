@@ -4,7 +4,10 @@ namespace Dxw\Iguana\Share;
 
 class ShareButtons implements \Dxw\Iguana\Registerable
 {
-    public function __construct(\Dxw\Iguana\Theme\Helpers $helpers, array $shareLinks)
+    private $helpers;
+    private $shareLinks;
+
+    public function __construct($helpers, array $shareLinks)
     {
         $this->helpers = $helpers;
         $this->shareLinks = $shareLinks;

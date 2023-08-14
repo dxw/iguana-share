@@ -8,18 +8,18 @@ describe(TwitterShareLink::class, function () {
     });
 
     it('is a ShareLink', function () {
-        expect($this->shareLink)->to->be->instanceof(ShareLink::class);
+        expect($this->shareLink)->toBeAnInstanceOf(ShareLink::class);
     });
 
     describe('->getLink()', function () {
         it('returns the link', function () {
-            expect($this->shareLink->getLink('aaa bbb=ccc', 'ddd'))->to->equal('https://twitter.com/intent/tweet?url=aaa+bbb%3Dccc&text=ddd');
+            expect($this->shareLink->getLink('aaa bbb=ccc', 'ddd'))->toEqual('https://twitter.com/intent/tweet?url=aaa+bbb%3Dccc&text=ddd');
         });
     });
 
     describe('->getPlatform()', function () {
         it('returns the platform', function () {
-            expect($this->shareLink->getPlatform())->to->equal('Twitter');
+            expect($this->shareLink->getPlatform())->toEqual('Twitter');
         });
     });
 });
